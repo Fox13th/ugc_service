@@ -1,0 +1,58 @@
+@startuml
+skinparam componentStyle uml2
+
+actor Пользователь as client
+
+frame "Сервис авторизации" {
+    [auth_api]
+    [roles_api]
+    database Postgres_Auth_DB {
+        [users]
+        [users_history]
+        [roles]
+    }
+    [roles_api] -up-> [roles]
+
+    database Redis_DB {
+        [access]
+        [refresh]
+        [rate_limit]
+    }
+
+}
+
+frame "Панель администратора" {
+    [Django_Admin]
+    database PostgresSQL {
+        [Movies]
+        [Users]
+    }
+}
+
+frame "Сервис выдачи контента" {
+    [content_api]
+    database ElasticSearch {
+        [es_movies]
+    }
+}
+
+frame "Сервис UGC" {
+    [Flask_API]
+    database Kafka
+    database ClickHouse
+}
+
+client -> "Сервис авторизации": Вход в сервис
+auth_api -> Django_Admin: Вход в панель администратора
+Django_Admin -> Movies: Добавление / изменение / удаление записи
+Movies -down-> es_movies: ETL
+
+auth_api -> content_api: Вход в сервис выдачи контента
+es_movies <-> content_api: Запрос / Получение контента
+
+
+content_api -down-> [Flask_API]: Сбор статистических данных пользователя
+[Flask_API] -> Kafka
+Kafka -> ClickHouse: ETL
+
+@enduml
