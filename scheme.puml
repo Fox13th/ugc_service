@@ -1,11 +1,13 @@
 @startuml
 skinparam componentStyle uml2
 
-actor Пользователь as client
+actor Клиент as client
+note left: В качестве клиента может выступать\n<b>Администратор</b> или обычный <b>пользователь</b>
 
 frame "Сервис авторизации" {
     [auth_api]
     [roles_api]
+    note right: Администратор назначает права
     database Postgres_Auth_DB {
         [users]
         [users_history]
