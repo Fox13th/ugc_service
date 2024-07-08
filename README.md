@@ -5,7 +5,7 @@
 
 # Cхема сервиса:
 
-
+![Image alt](https://github.com/Fox13th/ugc_service/blob/dev/scheme.png)
 
 # Результаты тестов хранилищ:
 1) Vertica:
