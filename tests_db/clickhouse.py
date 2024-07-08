@@ -41,6 +41,8 @@ def read_data():
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO, format="[%(asctime)s] [%(levelname)s] %(message)s")
+
     client = Client('127.0.0.1')
 
     start_insert_time = time.time()

@@ -39,12 +39,13 @@ def write_speed_test(num: int):
 
             while i_num < num:
                 try:
+                    list_data = []
                     for i in range(1000):
                         data_id = get_random()
-                        cursor.execute(
-                            f"INSERT INTO views (user_id, movie_id, viewed_frame) VALUES ('{data_id[0]}', "
-                            f"'{data_id[1]}', "
-                            f"{i})")
+                        list_data = list_data.append((f'{data_id[0]}', f'{data_id[1]}', i))
+
+                    cursor.executemany('INSERT INTO views (user_id, movie_id, viewed_frame) VALUES (?, ?, ?)',
+                                       list_data)
                     i_num += 1000
                 except IndexError:
                     break
@@ -71,11 +72,9 @@ def read_speed_test():
 
             end_time = time.time()
 
-            rand_id = get_random()
-
             start_exec = time.time()
 
-            cursor.execute(f"UPDATE views SET movie_id = '{rand_id[1]}' WHERE viewed_frame < 1000000")
+            cursor.execute('SELECT frame, count(*) number FROM views GROUP BY viewed_frame')
 
             end_exec = time.time()
 
@@ -105,5 +104,3 @@ if __name__ == '__main__':
     read_time, upd_time, num_rows = read_speed_test()
     logging.info(f'Time taken to read {num_rows} rows: {read_time} sec')
     logging.info(f'Time taken to update 100 rows: {upd_time} sec')
-
-
