@@ -18,6 +18,7 @@ class Settings(BaseSettings):
     # Kafka Settings
     kafka_host: str = 'kafka'
     kafka_port: str = '9094'
+    kafka_topic: str
 
     secret_key: str = 'secret'
     debug: bool = False
