@@ -11,5 +11,6 @@ pydantic==2.8.2
 pydantic-core==2.20.1
 pydantic-settings==2.3.4
 python-dotenv==1.0.1
+sentry-sdk==2.9.0
 gevent==24.2.1
 gunicorn==22.0.0
