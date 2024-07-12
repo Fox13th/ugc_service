@@ -16,12 +16,14 @@ class Settings(BaseSettings):
     base_dir: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
     # Kafka Settings
-    kafka_host: str = 'kafka'
+    kafka_host: str = '127.0.0.1'
     kafka_port: str = '9094'
-    kafka_topic: str
+    kafka_topic: str = 'events'
 
     secret_key: str = 'secret'
     debug: bool = False
+
+    jwt_secret: str = 'test-secret'
 
     class Config:
         env_file = ".env"
