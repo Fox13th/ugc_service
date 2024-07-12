@@ -14,6 +14,8 @@ class Settings(BaseSettings):
     # App Settings
     project_name: str = 'static_service'
     base_dir: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    service_url: str = 'http://flask:5000'
+    auth_service_url: str = 'http://fastapi:5000'
 
     # Kafka Settings
     kafka_host: str = '127.0.0.1'
