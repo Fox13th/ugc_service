@@ -1,3 +1,4 @@
+import logging
 import random
 import time
 import uuid
@@ -36,12 +37,13 @@ def insert_document(*, collection: Collection, num: int) -> Any:
             i_num += chunk
         except IndexError:
             break
+    return random_movie_id, random_user_id
 
 
-def find(*, collection: Collection):
+def find(*, collection: Collection, id_data: dict, action: str):
     pipeline = [
-        #{'$match': {'subgroup': 'movie_id'}},
-        {'$group': {'_id': '$movie_id', 'total_score': {'$avg': '$score'}}}
+        {'$match': id_data},
+        {'$group': {'_id': f'$movie_id', 'total_score': {f'${action}': '$score'}}}
     ]
 
     return collection.aggregate(pipeline)
@@ -52,27 +54,40 @@ def delete_document(*, collection: Collection, condition: dict):
 
 
 if __name__ == '__main__':
-    # Создание клиента
-    # Берем из расчёта 60000 фильмов на 100000 пользователей
+    logging.basicConfig(level=logging.INFO, format="[%(asctime)s] [%(levelname)s] %(message)s")
 
     client = MongoClient('127.0.0.1', 27017)
 
-    # Подключение к базе данных
     db = client['UsersDB']
 
     start_time = time.time()
-    insert_document(collection=db.users, num=6000000000)
+    movie_id, user_id = insert_document(collection=db.users, num=10000000)
     end_time = time.time()
+    rand_movie_id = random.choice(movie_id)
+    rand_user_id = random.choice(user_id)
 
-    print(f'Время вставки лайков: {end_time - start_time}')
+    logging.info(f'Время вставки лайков: {end_time - start_time}')
 
     start_time = time.time()
-    res = find(collection=db.users)
+    data = {'movie_id': rand_movie_id}
+    res = find(collection=db.users, id_data=data, action='avg')
     end_time = time.time()
-
     for row in res:
-        print(row)
+        logging.info(row)
+    logging.info(f'Cредняя пользовательская оценка фильма: {end_time - start_time}')
 
-    print(f'Время чтения лайков: {end_time - start_time}')
+    start_time = time.time()
+    res = find(collection=db.users, id_data=data, action='sum')
+    end_time = time.time()
+    for row in res:
+        logging.info(row)
+    logging.info(f'Количество лайков или дизлайков: {end_time - start_time}')
 
+    start_time = time.time()
+    data = {'$and': [{'user_id': rand_user_id}, {'score': 1}]}
+    res = find(collection=db.users, id_data=data, action='sum')
+    end_time = time.time()
+    for row in res:
+        logging.info(row)
+    logging.info(f'Cписок понравившихся пользователю фильмов: {end_time - start_time}')
 
