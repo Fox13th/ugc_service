@@ -1,5 +1,6 @@
 import logging
 import random
+import sys
 import time
 import uuid
 from typing import Any
@@ -21,8 +22,8 @@ def insert_document(*, collection: Collection, num: int) -> Any:
     if num < chunk:
         chunk = num
 
-    random_user_id = [str(uuid.uuid4()) for i in range(100000)]
-    random_movie_id = [str(uuid.uuid4()) for i in range(60000)]
+    random_user_id = [str(uuid.uuid4()) for i in range(int(sys.argv[2]))] # 100000
+    random_movie_id = [str(uuid.uuid4()) for i in range(int(sys.argv[3]))] # 60000
 
     while i_num < num:
         try:
@@ -61,7 +62,7 @@ if __name__ == '__main__':
     db = client['UsersDB']
 
     start_time = time.time()
-    movie_id, user_id = insert_document(collection=db.users, num=10000000)
+    movie_id, user_id = insert_document(collection=db.users, num=int(sys.argv[1]))
     end_time = time.time()
     rand_movie_id = random.choice(movie_id)
     rand_user_id = random.choice(user_id)
