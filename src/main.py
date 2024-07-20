@@ -5,12 +5,19 @@ monkey.patch_all()
 from gevent.pywsgi import WSGIServer
 from flask import Flask
 from flask_jwt_extended import JWTManager
+import sentry_sdk
 
 from core import config
 from api.v1.statistics import router
 
 
 settings = config.get_settings()
+
+sentry_sdk.init(
+    dsn=settings.sentry_dsn,
+    traces_sample_rate=1.0,
+    profiles_sample_rate=1.0,
+)
 
 app = Flask(settings.project_name)
 
