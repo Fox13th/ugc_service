@@ -6,6 +6,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from sentry_sdk import capture_exception
 
 from core import config
+from core.logger import logger
 from schemas.events import Event
 from service.kafka_s import send_to_kafka
 
@@ -30,9 +31,8 @@ def get_data():
         status = HTTPStatus.OK
 
     except Exception as error:
-        print(error)
+        logger.error(error)
         capture_exception(error)
-
         status = HTTPStatus.BAD_REQUEST
 
     return jsonify({'status': status.phrase}), status
