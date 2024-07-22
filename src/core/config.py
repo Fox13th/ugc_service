@@ -25,6 +25,8 @@ class Settings(BaseSettings):
 
     jwt_secret: str = 'test-secret'
 
+    sentry_dsn: str
+
     class Config:
         env_file = ".env"
         extra = "ignore"
