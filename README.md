@@ -3,7 +3,11 @@
 # Запуск проекта:
 1) В корне проекта лежит файл `.env.example`. Необходимо создать файл `.env` и указать в нем переменные окружения. Для тестового запуска можно использовать значения из `.env.example`.
 2) Для запуска ELK используется `docker-compose-elk.yml`.
-3) Ссылка на ETL проект (Kafka -> ClickHouse): **https://github.com/EsterTar/ugc_etl.git**
+3) Ссылка на Auth_Service: **https://github.com/Fox13th/Auth_Service.git**
+4) Ссылка на сервис выдачи контента: **https://github.com/Fox13th/Sprint_async_api.git**
+5) Ссылка на Django Admin: **https://github.com/EsterTar/admin_panel_sprint_3.git**
+
+6) Ссылка на ETL проект (Kafka -> ClickHouse): **https://github.com/EsterTar/ugc_etl.git**
 
 # Примечание:
 В данном варианте мы используем External Network для связи между микросервисами в качестве тестового варианта. В продакшне предполагается указание IP сервера.
