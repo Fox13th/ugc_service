@@ -8,6 +8,13 @@ from psycopg2.extras import execute_values, DictCursor
 import time
 
 
+def get_random(list_user_id: list, list_movie_id: list) -> list:
+    random_user = random.choice(list_user_id)
+    random_movie = random.choice(list_movie_id)
+    rand_like = random.randint(0, 1)
+    return [random_user, random_movie, rand_like]
+
+
 def create_table():
     cur.execute("""
                     CREATE TABLE IF NOT EXISTS test_table (
@@ -21,8 +28,6 @@ def create_table():
 
 
 def write_data(num: int):
-    data_to_insert = [(str(uuid.uuid4()), str(uuid.uuid4()), i) for i in range(num)]
-
     start_time = time.time()
 
     i_num = 0
@@ -30,17 +35,16 @@ def write_data(num: int):
     if num < chunk:
         chunk = num
 
-    #random_user_id = [str(uuid.uuid4()) for i in range(int(sys.argv[2]))]  # 100000
-    #random_movie_id = [str(uuid.uuid4()) for i in range(int(sys.argv[3]))]  # 60000
+    random_user_id = [str(uuid.uuid4()) for i in range(int(sys.argv[2]))]  # 100000
+    random_movie_id = [str(uuid.uuid4()) for i in range(int(sys.argv[3]))]  # 60000
 
     while i_num < num:
         try:
             list_data = []
-            #for i in range(chunk):
-                #data_id = get_random(random_user_id, random_movie_id)
-                #data = {'movie_id': f'{data_id[1]}', 'user_id': f'{data_id[0]}', 'score': [2]}
-            for i in range(1000):
-                list_data.append(data_to_insert[i])
+            for i in range(chunk):
+                data_id = get_random(random_user_id, random_movie_id)
+                data_to_insert = [data_id[0], data_id[1], data_id[2]]
+                list_data.append(data_to_insert)
 
             execute_values(cur, "INSERT INTO test_table (data) VALUES %s", list_data)
             pg_conn.commit()
@@ -73,5 +77,5 @@ if __name__ == '__main__':
     with closing(psycopg2.connect(**dsl, cursor_factory=DictCursor)) as pg_conn:
         cur = pg_conn.cursor()
         create_table()
-        write_data(100000)
+        write_data(sys.argv[1])
         read_data()
